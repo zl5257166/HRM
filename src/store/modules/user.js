@@ -52,6 +52,15 @@ const actions = {
     const merge = { ...result, ...detail }
     context.commit('SET_USERINFO', merge)
     return merge
+  },
+  /**
+   * 登出
+   */
+  logout(context) {
+    // 删除token
+    context.commit('REMOVE_TOKEN')
+    // 删除用户资料
+    context.commit('REMOVE_USERINFO')
   }
 }
 
