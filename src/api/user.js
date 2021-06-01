@@ -18,6 +18,14 @@ export function getInfo(token) {
     method: 'post'
   })
 }
+/**
+ * 获取用户详情 --头像
+ */
+export function getUserDetail(id) {
+  return request({
+    url: `sys/user/${id}`
+  })
+}
 
 export function logout() {
 }
