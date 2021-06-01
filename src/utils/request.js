@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
+import store from '@/store'
 // 1 创建实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -7,7 +8,14 @@ const service = axios.create({
 })
 
 // 2 请求拦截器(主要解决token的统一注入问题)
-service.interceptors.request.use()
+service.interceptors.request.use((config) => {
+  if (store.getters.token) {
+    config.headers['Authorization'] = `Bearer ${store.getters.token}`
+  }
+  return config
+}, (err) => {
+  return Promise.reject(err)
+})
 
 // 3 响应拦截器（主要处理返回的数据异常和数据结构问题）
 service.interceptors.response.use((res) => {
