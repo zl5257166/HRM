@@ -143,7 +143,7 @@ export default {
           cursor: pointer;
           width: 30px;
           height: 30px;
-          border-radius: 15x;
+          border-radius: 15px;
           vertical-align: middle;
         }
         .name {

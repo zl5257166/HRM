@@ -1,6 +1,11 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
+import { getTimeStamp } from './auth'
+import router from '@/router'
+
+const timeOut = 3600 // 超时时间 单位s  1h
+
 // 1 创建实例
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -10,6 +15,11 @@ const service = axios.create({
 // 2 请求拦截器(主要解决token的统一注入问题)
 service.interceptors.request.use((config) => {
   if (store.getters.token) {
+    if (isTimeOut()) { // 如果token超时，则登出
+      store.dispatch('user/logout')
+      router.push('/login')
+      return Promise.reject(new Error('token已超时'))
+    }
     config.headers['Authorization'] = `Bearer ${store.getters.token}`
   }
   return config
@@ -32,5 +42,15 @@ service.interceptors.response.use((res) => {
   return Promise.reject(error)
 })
 
+/**
+ * 判断是否token超时， （当前时间 - 缓存中的时间） 是否大于 超时时间timeOut
+ */
+function isTimeOut() {
+  const currentTime = Date.now()
+  console.log('currentTime:', currentTime)
+  const timeStamp = getTimeStamp()
+  console.log('timeStamp:', timeStamp)
+  return (currentTime - timeStamp) / 1000 > timeOut
+}
 // 4 导出
 export default service
